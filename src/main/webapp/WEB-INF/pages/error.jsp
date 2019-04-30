@@ -18,7 +18,7 @@
 
     <!--CONTENT-->
     <div class="content">
-        <h3>${info}</h3>
+        <p class="info">${info}</p>
     </div>
 
     <!--ASIDE-->

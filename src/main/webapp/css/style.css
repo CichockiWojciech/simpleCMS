@@ -156,7 +156,7 @@ p.personal-value{
 }
 .editor textarea{
     border: 3px solid #ccc;
-    height: 80%;
+    /*height: 80%;*/
     resize: none;
     margin: 10px auto;
 }
@@ -169,6 +169,15 @@ p.personal-value{
     height: 7%;
     width: 95%;
     text-align: center;
+}
+
+.editor input[type=submit]{
+    display: block;
+    margin: 10px auto;
+    width: 20%;
+    height: 8%;
+    font-size: 1em;
+    font-weight: 600;
 }
 
 .link{
