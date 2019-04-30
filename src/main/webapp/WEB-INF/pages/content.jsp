@@ -8,34 +8,25 @@
     <title>Document</title>
 </head>
 <body>
-<header class="app-header">
-    <h1>nagłówek</h1>
-</header>
+<jsp:include page="/WEB-INF/elements/header.jsp" />
 
 <section class="app-container">
     <!--NAV-->
     <div class="container-box">
-        <jsp:include page="/WEB-INF/elements/nav.jsp" />
+        <jsp:include page="/WEB-INF/elements/content-navigation.jsp" />
     </div>
 
     <!--CONTENT-->
     <div class="content">
-        <div id="title">
-            <h3><%=request.getAttribute("title")%></h3>
-        </div>
-        <div id="text">
-            <p><%=request.getAttribute("text")%></p>
-        </div>
+        <jsp:include page="/WEB-INF/elements/content-view.jsp" />
     </div>
 
     <!--ASIDE-->
-    <div class="container-box account">
-        <jsp:include page="/WEB-INF/elements/aside.jsp" />
+    <div class="container-box">
+        <jsp:include page="/WEB-INF/elements/account-navigation.jsp" />
     </div>
 </section>
 
-<footer class="app-footer">
-    <span>&copy; Copyright 2019 </span>
-</footer>
+<jsp:include page="/WEB-INF/elements/footer.jsp" />
 </body>
 </html>

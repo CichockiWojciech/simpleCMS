@@ -1,7 +1,7 @@
-package pl.web.listener;
+package pl.controller.listener;
 
-import pl.domain.ContentDAO;
-import pl.domain.UserDAO;
+import pl.model.domain.ContentDAO;
+import pl.model.domain.UserDAO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

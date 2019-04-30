@@ -1,7 +1,8 @@
-package pl.web.servlets;
+package pl.controller.servlets;
 
-import pl.domain.User;
-import pl.web.Util;
+import pl.model.domain.User;
+import pl.model.util.Session;
+import pl.model.util.View;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -27,17 +28,17 @@ public class ContentServlet extends HttpServlet {
         String title = request.getParameter("submit");
         Object userObj = request.getSession().getAttribute("user");
         if(userObj instanceof User){
-            User user = Util.getLogInUser(request, context);
-            String text = user.getContent(title);
-            System.out.println("text: " + Optional.ofNullable(text).orElse("null"));
-            System.out.println("title: " + Optional.ofNullable(title).orElse("null"));
-            request.setAttribute("title", title);
-            request.setAttribute("text", text);
-            Util.setPersonalData(request, user);
+            Optional<User> user = Session.getLogInUser(request, context);
+            if(user.isPresent()){
+                String text = user.get().getContentByTitle(title);
+                request.setAttribute("title", title);
+                request.setAttribute("text", text);
+                View.setPersonalData(request, user.get());
+            }
             context.getRequestDispatcher(path + "/content.jsp").forward(request, response);
         }else {
             request.setAttribute("info", "nie jestes zalogowny");
-            context.getRequestDispatcher(path + "/result.jsp").forward(request, response);
+            context.getRequestDispatcher(path + "/error.jsp").forward(request, response);
         }
 
     }

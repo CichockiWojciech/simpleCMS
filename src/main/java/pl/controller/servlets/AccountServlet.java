@@ -1,10 +1,12 @@
-package pl.web.servlets;
+package pl.controller.servlets;
 
-import pl.domain.Content;
-import pl.domain.ContentDAO;
-import pl.domain.User;
-import pl.domain.UserDAO;
-import pl.web.Util;
+import javafx.util.Pair;
+import pl.model.domain.Content;
+import pl.model.domain.ContentDAO;
+import pl.model.domain.User;
+import pl.model.domain.UserDAO;
+import pl.model.util.Session;
+import pl.model.util.View;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 @WebServlet(name = "AccountServlet", urlPatterns = {"/account"})
 public class AccountServlet extends HttpServlet {
@@ -28,24 +31,25 @@ public class AccountServlet extends HttpServlet {
         Content content = new Content();
         content.setContent(text);
         content.setTitle(title);
-        Object userObj = request.getSession().getAttribute("user");
-        if(userObj instanceof User) {
-            User user = (User) userObj;
-            if (validPageContent(title, text)) {
+        Optional<User> user = Session.getLogInUser(request, context);
+        if(user.isPresent()){
+            ContentDAO contentDAO = (ContentDAO) context.getAttribute("contentDAO");
+            Pair<Boolean, String> canCreate = contentDAO.isValid(content);
+            if(canCreate.getKey()){
                 UserDAO userDAO = (UserDAO) context.getAttribute("userDAO");
-                ContentDAO contentDAO = (ContentDAO) context.getAttribute("contentDAO");
-                user.addContent(content);
+                user.get().addContent(content);
                 contentDAO.save(content);
-                userDAO.save(user);
-                Util.setPersonalData(request, user);
+                userDAO.save(user.get());
+                View.setPersonalData(request, user.get());
                 context.getRequestDispatcher(path + "/account.jsp").forward(request, response);
             } else{
-                request.setAttribute("info", "nieprawidlowo wypelniony formularz");
-                context.getRequestDispatcher(path + "/result.jsp").forward(request, response);
+                request.setAttribute("info", canCreate.getValue());
+                View.setPersonalData(request, user.get());
+                context.getRequestDispatcher(path + "/create.jsp").forward(request, response);
             }
         }else {
             request.setAttribute("info", "Nie jestes zalogowany");
-            context.getRequestDispatcher(path + "/result.jsp").forward(request, response);
+            context.getRequestDispatcher(path + "/error.jsp").forward(request, response);
         }
     }
 
@@ -56,40 +60,29 @@ public class AccountServlet extends HttpServlet {
         String path = context.getInitParameter("resourcePath");
 
         String action = request.getParameter("action");
+        Optional<User> user = Session.getLogInUser(request, context);
+        if(!user.isPresent()){
+            request.setAttribute("info", "nie jestes zalogowny");
+            context.getRequestDispatcher(path + "/error.jsp").forward(request, response);
+        }
         switch (action.toLowerCase()){
             // handle aside
             case "profil":{
-                if(Util.checkIfLogIn(request)){
-                    User user = (User) request.getSession().getAttribute("user");
-                    Util.setPersonalData(request, user);
-                    context.getRequestDispatcher(path + "/account.jsp").forward(request, response);
-                }else{
-                    request.setAttribute("info", "nie jestes zalogowny");
-                    context.getRequestDispatcher(path + "/result.jsp").forward(request, response);
-                }
+                View.setPersonalData(request, user.get());
+                context.getRequestDispatcher(path + "/account.jsp").forward(request, response);
                 break;
             }
             case "wyloguj":{
                 request.getSession().invalidate();
-                context.getRequestDispatcher(path + "/login.html").forward(request, response);
+                context.getRequestDispatcher(path + "/login.jsp").forward(request, response);
                 break;
             }
             // handle nav
             case "dodaj strone":{
-                if(Util.checkIfLogIn(request)){
-                    Util.setPersonalData(request, (User) request.getSession().getAttribute("user"));
-                    context.getRequestDispatcher(path + "/manage-content.jsp").forward(request, response);
-                }else{
-                    request.setAttribute("info", "nie jestes zalogowny");
-                    context.getRequestDispatcher(path + "/result.jsp").forward(request, response);
-                }
+                View.setPersonalData(request, user.get());
+                context.getRequestDispatcher(path + "/create.jsp").forward(request, response);
                 break;
             }
         }
-    }
-
-    private static boolean validPageContent(String title, String text){
-        return title.length() > 5 && text.length() > 5;
-
     }
 }

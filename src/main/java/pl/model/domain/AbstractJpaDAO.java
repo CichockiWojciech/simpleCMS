@@ -1,19 +1,32 @@
-package pl.domain;
+package pl.model.domain;
+
+import javafx.util.Pair;
 
 import javax.persistence.*;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public abstract class AbstractJpaDao< T extends Serializable> {
+public abstract class AbstractJpaDAO< T extends Serializable> {
     private Class< T > clazz;
+
+    private static ValidatorFactory validatorFactory;
+    private static Validator validator;
+
+    static {
+        validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
+    }
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public AbstractJpaDao( Class< T > clazzToSet, EntityManager entityManager) {
+    public AbstractJpaDAO(Class< T > clazzToSet, EntityManager entityManager) {
         this.clazz = clazzToSet;
         this.entityManager = entityManager;
     }
@@ -40,8 +53,6 @@ public abstract class AbstractJpaDao< T extends Serializable> {
     public List< T > findAll(String jpgl, Map<String, String> args){
         Query query = entityManager.createQuery(jpgl, clazz);
         Optional.ofNullable(args).ifPresent((useless) -> args.forEach(query::setParameter));
-//        if(args != null)
-//            args.forEach(query::setParameter);
         return query.getResultList();
     }
 
@@ -69,4 +80,10 @@ public abstract class AbstractJpaDao< T extends Serializable> {
             throw e;
         }
     }
+
+    protected Validator getValidator(){
+        return validator;
+    }
+
+    public abstract Pair<Boolean, String> isValid(T t);
 }

@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false"%>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,25 +8,26 @@
     <title>Document</title>
 </head>
 <body>
+<!--HEADER-->
 <jsp:include page="/WEB-INF/elements/header.jsp" />
 
 <section class="app-container">
     <!--NAV-->
     <div class="container-box">
-        <jsp:include page="/WEB-INF/elements/content-navigation.jsp" />
     </div>
 
     <!--CONTENT-->
     <div class="content">
-        <jsp:include page="/WEB-INF/elements/personal-data.jsp" />
+        <h3>${info}</h3>
     </div>
 
     <!--ASIDE-->
     <div class="container-box">
-        <jsp:include page="/WEB-INF/elements/account-navigation.jsp" />
+        <jsp:include page="/WEB-INF/elements/main-navigation.jsp" />
     </div>
 </section>
 
+<!--FOOTER-->
 <jsp:include page="/WEB-INF/elements/footer.jsp" />
 </body>
 </html>

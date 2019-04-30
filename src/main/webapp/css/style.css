@@ -106,7 +106,9 @@ body {
     border: 2px solid #ccc;
 }
 
-/* new */
+.aside-option{
+    margin-top: 10px;
+}
 
 .flex-wrapper{
     display: flex;
@@ -152,19 +154,39 @@ p.personal-value{
     padding: 10px;
     border: 2px solid #ccc;
 }
+.editor textarea{
+    border: 3px solid #ccc;
+    height: 80%;
+    resize: none;
+    margin: 10px auto;
+}
 
-#text-editor{
-    border: 2px solid #ccc;
-    width: 90%;
-    height: 70%;
+.editor input[type=text]{
+    display: block;
+    margin: 10px auto;
+    font-size: 24px;
+    font-weight: 500;
+    height: 7%;
+    width: 95%;
+    text-align: center;
+}
+
+.link{
+    padding: 3px;
+    margin-top: 3px;
+    font-size: 16px;
+}
+
+.info{
+    color: red;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-top: 10px;
 }
 
 ul {
     list-style: none;
-}
-
-ul > li {
-    margin: 10px;
 }
 
 #page-list>li{

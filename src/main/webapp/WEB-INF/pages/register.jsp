@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,9 +8,8 @@
     <title>Document</title>
 </head>
 <body>
-<header class="app-header">
-    <h1>nagłówek</h1>
-</header>
+<!--HEADER-->
+<jsp:include page="/WEB-INF/elements/header.jsp" />
 
 <section class="app-container">
     <!--NAV-->
@@ -19,20 +18,16 @@
 
     <!--CONTENT-->
     <div class="content">
-        <form action="login.do" method="POST" class="register">
-            <input type="text" name="login" placeholder="LOGIN">
-            <input type="password" name="password" placeholder="HASŁO">
-            <input type="submit" value="ZALOGUJ">
-        </form>
+        <jsp:include page="/WEB-INF/elements/register-form.jsp" />
     </div>
 
     <!--ASIDE-->
-    <div class="container-box account">
+    <div class="container-box">
+        <jsp:include page="/WEB-INF/elements/main-navigation.jsp" />
     </div>
 </section>
 
-<footer class="app-footer">
-    <span>&copy; Copyright 2019 </span>
-</footer>
+<!--FOOTER-->
+<jsp:include page="/WEB-INF/elements/footer.jsp" />
 </body>
 </html>
