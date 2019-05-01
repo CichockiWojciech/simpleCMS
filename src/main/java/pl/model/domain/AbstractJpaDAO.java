@@ -56,6 +56,10 @@ public abstract class AbstractJpaDAO< T extends Serializable> {
         return query.getResultList();
     }
 
+    public void refresh(T t){
+        entityManager.refresh(t);
+    }
+
     public void save( T entity ){
         executeInsideTransaction(entityManager -> entityManager.persist(entity));
     }

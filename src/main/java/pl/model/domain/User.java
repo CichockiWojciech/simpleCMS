@@ -22,7 +22,7 @@ public class User implements Serializable {
     private long id;
 
     @NotNull
-    @Size(min = 5, max = 80)
+    @Size(min = 5, max = 80, message = "nieprawidlowa dlugosc imienia")
     private String firstName;
 
     @NotNull
@@ -31,12 +31,12 @@ public class User implements Serializable {
 
     @NotNull
     @Size(min = 5, max = 80)
-    @Pattern(regexp = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])")
+    @Pattern(regexp = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])", message = "zły format email")
     @Column(unique = true)
     private String email;
 
     @NotNull
-    @Size(min = 5, max = 80)
+    @Size(min = 5, max = 80, message = "nieprawidlowa dlugosc loginu")
     @Column(unique = true)
     private String login;
 
@@ -51,23 +51,28 @@ public class User implements Serializable {
     private List<Content> contents;
 
     @Column(table = "COLOR", nullable = true)
-    @Size(min = 7, max = 7)
+    @NotNull
+    @Pattern(regexp = "^#([0-9a-fA-F]{6})|#([0-9a-fA-F]{3})$",message = "nie prawidłowy format koloru nagłówka")
     private String headerColor;
 
     @Column(table = "COLOR", nullable = true)
-    @Size(min = 7, max = 7)
+    @NotNull
+    @Pattern(regexp = "^#([0-9a-fA-F]{6})|#([0-9a-fA-F]{3})$",message = "nie prawidłowy format koloru zawartosci")
     private String contentColor;
 
     @Column(table = "COLOR", nullable = true)
-    @Size(min = 7, max = 7)
+    @NotNull
+    @Pattern(regexp = "^#([0-9a-fA-F]{6})|#([0-9a-fA-F]{3})$",message = "nie prawidłowy format koloru linków")
     private String linkColor;
 
     @Column(table = "COLOR", nullable = true)
-    @Size(min = 7, max = 7)
+    @NotNull
+    @Pattern(regexp = "^#([0-9a-fA-F]{6})|#([0-9a-fA-F]{3})$",message = "nie prawidłowy format koloru panelu bocznego")
     private String asideColor;
 
     @Column(table = "COLOR", nullable = true)
-    @Size(min = 7, max = 7)
+    @NotNull
+    @Pattern(regexp = "^#([0-9a-fA-F]{6})|#([0-9a-fA-F]{3})$",message = "nie prawidłowy format koloru stopki")
     private String footerColor;
 
     public User() {
@@ -94,6 +99,6 @@ public class User implements Serializable {
 
     public String getContentByTitle(String tile){
         return contents.stream().filter((content) -> content.getTitle().equals(tile))
-                .map(Content::getContent).findFirst().orElse("");
+                .map(Content::getText).findFirst().orElse("");
     }
 }

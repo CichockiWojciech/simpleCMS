@@ -126,13 +126,18 @@ body {
     flex: 2;
 }
 
-#personal-data>form{
-    text-align: center;
+#personal-data input[type=submit], .avatar input[type=submit]{
+    display: block;
+    margin: 5px auto;
 }
 
-#avatar{
+.image-upload{
     flex: 1;
-    padding: 10px;
+    margin: 0 10px;
+}
+
+.image-upload img:hover, .image-upload img:focus{
+    cursor: pointer;
 }
 
 p.personal-key{
@@ -206,4 +211,8 @@ ul {
 
 textarea {
     resize: none;
+}
+
+.image-upload>input {
+    display: none;
 }

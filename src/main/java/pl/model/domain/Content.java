@@ -27,8 +27,13 @@ public class Content implements Serializable {
     @Type(type = "text")
     @NotNull
     @Size(min = 5, max = 50000)
-    private String content;
+    private String text;
 
     public Content() {
+    }
+
+    public Content(@NotNull @Size(min = 5, max = 120) String title, @NotNull @Size(min = 5, max = 50000) String text) {
+        this.title = title;
+        this.text = text;
     }
 }

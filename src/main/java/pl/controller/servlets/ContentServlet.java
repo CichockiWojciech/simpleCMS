@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
 
 @WebServlet(name = "ContentServlet", urlPatterns = {"/content"})
 public class ContentServlet extends HttpServlet {
@@ -26,20 +25,11 @@ public class ContentServlet extends HttpServlet {
         String path = context.getInitParameter("resourcePath");
 
         String title = request.getParameter("submit");
-        Object userObj = request.getSession().getAttribute("user");
-        if(userObj instanceof User){
-            Optional<User> user = Session.getLogInUser(request, context);
-            if(user.isPresent()){
-                String text = user.get().getContentByTitle(title);
-                request.setAttribute("title", title);
-                request.setAttribute("text", text);
-                View.setPersonalData(request, user.get());
-            }
-            context.getRequestDispatcher(path + "/content.jsp").forward(request, response);
-        }else {
-            request.setAttribute("info", "nie jestes zalogowny");
-            context.getRequestDispatcher(path + "/error.jsp").forward(request, response);
-        }
-
+        User user = Session.getLogInUser(request,  response, context, true);
+        String text = user.getContentByTitle(title);
+        request.setAttribute("title", title);
+        request.setAttribute("text", text);
+        View.setPersonalData(request, user);
+        context.getRequestDispatcher(path + "/content.jsp").forward(request, response);
     }
 }

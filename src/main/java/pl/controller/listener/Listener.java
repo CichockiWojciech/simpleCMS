@@ -1,5 +1,6 @@
 package pl.controller.listener;
 
+import pl.model.domain.AvatarDAO;
 import pl.model.domain.ContentDAO;
 import pl.model.domain.UserDAO;
 
@@ -35,10 +36,13 @@ public class Listener implements ServletContextListener,
       EntityManager entityManager = entityManagerFactory.createEntityManager();
       UserDAO userDAO = new UserDAO(entityManager);
       ContentDAO contentDAO = new ContentDAO(entityManager);
+      AvatarDAO avatarDAO = new AvatarDAO(entityManager);
       sce.getServletContext().setAttribute("entityManagerFactory", entityManagerFactory);
       sce.getServletContext().setAttribute("entityManager", entityManager);
       sce.getServletContext().setAttribute("userDAO", userDAO);
       sce.getServletContext().setAttribute("contentDAO", contentDAO);
+      sce.getServletContext().setAttribute("avatarDAO", avatarDAO);
+
     }
 
     public void contextDestroyed(ServletContextEvent sce) {

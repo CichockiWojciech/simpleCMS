@@ -21,8 +21,7 @@ public class ContentDAO extends AbstractJpaDAO<Content> {
 
         if(c.isPresent())
             return new Pair<>(false, "tytul jest zajety");
-        else
-            return new Pair<>(true, "");
+        return new Pair<>(true, "");
     }
 
     public Pair<Boolean, String> isValid(Content content){

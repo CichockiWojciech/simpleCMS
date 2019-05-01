@@ -6,7 +6,7 @@
         <input type="text" name="title" PLACEHOLDER="TITLE">
     </div>
     <div>
-        <textarea name="content" placeholder="CONTENT"></textarea>
+        <textarea name="text" placeholder="CONTENT"></textarea>
     </div>
     <div>
         <input type="submit" name="action" value="wstaw">

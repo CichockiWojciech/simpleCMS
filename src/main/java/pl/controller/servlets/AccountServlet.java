@@ -1,55 +1,107 @@
 package pl.controller.servlets;
 
 import javafx.util.Pair;
-import pl.model.domain.Content;
-import pl.model.domain.ContentDAO;
-import pl.model.domain.User;
-import pl.model.domain.UserDAO;
+import pl.model.domain.*;
 import pl.model.util.Session;
 import pl.model.util.View;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Optional;
 
 @WebServlet(name = "AccountServlet", urlPatterns = {"/account"})
+@MultipartConfig
 public class AccountServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        request.setCharacterEncoding("UTF-8");
         ServletContext context = getServletContext();
         String path = context.getInitParameter("resourcePath");
+        request.setCharacterEncoding("UTF-8");
 
-        String text = request.getParameter("content");
-        String title = request.getParameter("title");
-
-        Content content = new Content();
-        content.setContent(text);
-        content.setTitle(title);
-        Optional<User> user = Session.getLogInUser(request, context);
-        if(user.isPresent()){
-            ContentDAO contentDAO = (ContentDAO) context.getAttribute("contentDAO");
-            Pair<Boolean, String> canCreate = contentDAO.isValid(content);
-            if(canCreate.getKey()){
-                UserDAO userDAO = (UserDAO) context.getAttribute("userDAO");
-                user.get().addContent(content);
-                contentDAO.save(content);
-                userDAO.save(user.get());
-                View.setPersonalData(request, user.get());
-                context.getRequestDispatcher(path + "/account.jsp").forward(request, response);
-            } else{
-                request.setAttribute("info", canCreate.getValue());
-                View.setPersonalData(request, user.get());
-                context.getRequestDispatcher(path + "/create.jsp").forward(request, response);
+        User user = Session.getLogInUser(request, response, context, true);
+        View.setPersonalData(request, user);
+        UserDAO userDAO = (UserDAO) context.getAttribute("userDAO");
+        String action = request.getParameter("action");
+        switch (action.toLowerCase()){
+            case "edytuj":{
+                String firstName = request.getParameter("firstName");
+                String lastName = request.getParameter("lastName");
+                String login = request.getParameter("login");
+                String email = request.getParameter("email");
+                synchronized (request.getSession()){
+                    update(user, firstName, lastName, login, email);
+                    Pair<Boolean, String> canCreate = userDAO.isValidOnUpdate(user);
+                    if(canCreate.getKey()){
+                        update(user, firstName, lastName, login, email);
+                        userDAO.update(user);
+                        View.setPersonalData(request, user);
+                        context.getRequestDispatcher(path + "/account.jsp").forward(request, response);
+                    }else{
+                        userDAO.refresh(user);
+                        View.setPersonalData(request, user);
+                        request.setAttribute("info", canCreate.getValue());
+                        context.getRequestDispatcher(path + "/edit.jsp").forward(request, response);
+                    }
+                }
+                break;
             }
-        }else {
-            request.setAttribute("info", "Nie jestes zalogowany");
-            context.getRequestDispatcher(path + "/error.jsp").forward(request, response);
+            case "wstaw":{
+                String title = request.getParameter("title");
+                String text = request.getParameter("text");
+                Content content = new Content(title, text);
+                ContentDAO contentDAO = (ContentDAO) context.getAttribute("contentDAO");
+                Pair<Boolean, String> canCreate = contentDAO.isValid(content);
+                if(canCreate.getKey()){
+                    user.addContent(content);
+                    contentDAO.save(content);
+                    userDAO.save(user);
+                    context.getRequestDispatcher(path + "/account.jsp").forward(request, response);
+                } else{
+                    request.setAttribute("info", canCreate.getValue());
+                    context.getRequestDispatcher(path + "/create.jsp").forward(request, response);
+                }
+                break;
+            }
+            case "dodaj": {
+                final Part avatarPart = request.getPart("avatar");
+                if("".equals(avatarPart.getSubmittedFileName())){
+                    request.setAttribute("info", "nie wybrano pliku");
+                    context.getRequestDispatcher(path + "/account.jsp").forward(request, response);
+                    return;
+                }
+                final BufferedImage img = View.resize(ImageIO.read(avatarPart.getInputStream()), 130, 130);
+                ByteArrayOutputStream bytesImg = new ByteArrayOutputStream();
+                ImageIO.write(img, "png", bytesImg);
+                byte[] bytes = bytesImg.toByteArray();
+
+                Avatar avatar = new Avatar(img.getWidth(), img.getHeight(), bytes);
+                AvatarDAO avatarDAO = (AvatarDAO) context.getAttribute("avatarDAO");
+                Pair<Boolean, String> canCreate = avatarDAO.isValid(avatar);
+                if(canCreate.getKey()){
+                    Avatar oldAvatar = user.getAvatar();
+                    if(oldAvatar != null){
+                        avatarDAO.delete(oldAvatar);
+                    }
+                    user.setAvatar(avatar);
+                    avatarDAO.save(avatar);
+                    userDAO.save(user);
+                    request.setAttribute("info", "zmieniono awatar");
+                    context.getRequestDispatcher(path + "/account.jsp").forward(request, response);
+
+                }else{
+                    request.setAttribute("info", canCreate.getValue());
+                    context.getRequestDispatcher(path + "/account.jsp").forward(request, response);
+                }
+            }
         }
     }
 
@@ -60,15 +112,11 @@ public class AccountServlet extends HttpServlet {
         String path = context.getInitParameter("resourcePath");
 
         String action = request.getParameter("action");
-        Optional<User> user = Session.getLogInUser(request, context);
-        if(!user.isPresent()){
-            request.setAttribute("info", "nie jestes zalogowny");
-            context.getRequestDispatcher(path + "/error.jsp").forward(request, response);
-        }
+        User user = Session.getLogInUser(request, response, context, true);
+        View.setPersonalData(request, user);
         switch (action.toLowerCase()){
             // handle aside
             case "profil":{
-                View.setPersonalData(request, user.get());
                 context.getRequestDispatcher(path + "/account.jsp").forward(request, response);
                 break;
             }
@@ -79,10 +127,24 @@ public class AccountServlet extends HttpServlet {
             }
             // handle nav
             case "dodaj strone":{
-                View.setPersonalData(request, user.get());
                 context.getRequestDispatcher(path + "/create.jsp").forward(request, response);
                 break;
             }
+            case "edytuj":{
+                context.getRequestDispatcher(path + "/edit.jsp").forward(request, response);
+                break;
+            }
         }
+    }
+
+    private void update(User user, String firstName, String lastName, String login, String email){
+        if(!firstName.isEmpty())
+            user.setFirstName(firstName);
+        if(!lastName.isEmpty())
+            user.setLastName(lastName);
+        if(!login.isEmpty())
+            user.setLogin(login);
+        if(!email.isEmpty())
+            user.setEmail(email);
     }
 }
