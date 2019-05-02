@@ -1,6 +1,7 @@
 package pl.model.domain;
 
 import javafx.util.Pair;
+import pl.model.util.Validator;
 
 import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolation;
@@ -16,8 +17,6 @@ public class AvatarDAO extends AbstractJpaDAO<Avatar> {
         Set<ConstraintViolation<Avatar>> constraintViolations = super.getValidator().validate(avatar);
         if(constraintViolations.isEmpty())
             return new Pair<>(true, "");
-        StringBuilder msg = new StringBuilder();
-        constraintViolations.forEach(constraint -> msg.append(constraint.getMessage()));
-        return new Pair<>(false, msg.toString());
+        return Validator.getMsg(constraintViolations);
     }
 }

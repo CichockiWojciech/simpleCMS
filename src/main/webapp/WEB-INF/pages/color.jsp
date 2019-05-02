@@ -19,7 +19,7 @@
 
     <!--CONTENT-->
     <div class="content" style="border-color: ${contentColor} !important;">
-        <jsp:include page="/WEB-INF/elements/personal-data-editor.jsp" />
+        <jsp:include page="/WEB-INF/elements/color-form.jsp" />
     </div>
 
     <!--ASIDE-->

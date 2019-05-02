@@ -2,6 +2,7 @@ package pl.model.domain;
 
 import com.google.common.collect.ImmutableMap;
 import javafx.util.Pair;
+import pl.model.util.Validator;
 
 import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolation;
@@ -39,6 +40,13 @@ public class UserDAO extends AbstractJpaDAO<User> {
         return new Pair<>(true, "");
     }
 
+    public Pair<Boolean, String> isColorValid(User user){
+        Set<ConstraintViolation<User>> constraintViolations = super.getValidator().validate(user);
+        if(constraintViolations.isEmpty())
+            return new Pair<>(true, "");
+        return Validator.getMsg(constraintViolations);
+    }
+
     public Pair<Boolean, String> isValid(User user){
         Set<ConstraintViolation<User>> constraintViolations = super.getValidator().validate(user);
         if(constraintViolations.isEmpty())
@@ -50,8 +58,6 @@ public class UserDAO extends AbstractJpaDAO<User> {
         Set<ConstraintViolation<User>> constraintViolations = super.getValidator().validate(user);
         if(constraintViolations.isEmpty())
             return uniqueExcept(user);
-        StringBuilder msg = new StringBuilder();
-        constraintViolations.forEach(constraint -> msg.append(constraint.getMessage()));
-        return new Pair<>(false, msg.toString());
+        return Validator.getMsg(constraintViolations);
     }
 }

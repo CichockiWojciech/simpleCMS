@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/style.css">
     <title>Document</title>
 </head>
+<jsp:include page="/WEB-INF/scriptlets/color.jsp" />
 <body>
 <jsp:include page="/WEB-INF/elements/header.jsp" />
 
@@ -17,7 +18,7 @@
     </div>
 
     <!--CONTENT-->
-    <div class="content">
+    <div class="content" style="border-color: ${contentColor} !important;">
         <jsp:include page="/WEB-INF/elements/personal-data.jsp" />
     </div>
 

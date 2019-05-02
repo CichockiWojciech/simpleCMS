@@ -18,14 +18,19 @@
     </jsp-property-group>
   </jsp-config>
 
-  <!--&lt;!&ndash;SESSION CONFIG (60min)&ndash;&gt;-->
-  <!--<session-config>-->
-    <!--<session-timeout>60</session-timeout>-->
-  <!--</session-config>-->
+  <!--SESSION CONFIG (60min)-->
+  <session-config>
+    <session-timeout>60</session-timeout>
+  </session-config>
 
   <!-- RESOURCE -->
   <context-param>
     <param-name>resourcePath</param-name>
     <param-value>/WEB-INF/pages</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>defaultColor</param-name>
+    <param-value>#ccc</param-value>
   </context-param>
 </web-app>

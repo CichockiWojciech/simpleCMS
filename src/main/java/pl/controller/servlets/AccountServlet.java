@@ -101,6 +101,35 @@ public class AccountServlet extends HttpServlet {
                     request.setAttribute("info", canCreate.getValue());
                     context.getRequestDispatcher(path + "/account.jsp").forward(request, response);
                 }
+                break;
+            }
+            case "zmien kolor":{
+                String headerColor = request.getParameter("headerColor");
+                String asideColor = request.getParameter("asideColor");
+                String contentColor = request.getParameter("contentColor");
+                String linkColor = request.getParameter("linkColor");
+                String footerColor = request.getParameter("footerColor");
+                if(!headerColor.equals(""))
+                    user.setHeaderColor(headerColor);
+                if(!asideColor.equals(""))
+                    user.setAsideColor(asideColor);
+                if(!contentColor.equals(""))
+                    user.setContentColor(contentColor);
+                if(!linkColor.equals(""))
+                    user.setLinkColor(linkColor);
+                if(!footerColor.equals(""))
+                    user.setFooterColor(footerColor);
+
+                final Pair<Boolean, String> canCreate = userDAO.isColorValid(user);
+                if(canCreate.getKey()){
+                    userDAO.save(user);
+                    View.setPersonalData(request, user);
+                    context.getRequestDispatcher(path + "/account.jsp").forward(request, response);
+                }else {
+                    request.setAttribute("info", canCreate.getValue());
+                    context.getRequestDispatcher(path + "/color.jsp").forward(request, response);
+                }
+                break;
             }
         }
     }
@@ -128,6 +157,10 @@ public class AccountServlet extends HttpServlet {
             // handle nav
             case "dodaj strone":{
                 context.getRequestDispatcher(path + "/create.jsp").forward(request, response);
+                break;
+            }
+            case "ustaw kolor":{
+                context.getRequestDispatcher(path + "/color.jsp").forward(request, response);
                 break;
             }
             case "edytuj":{

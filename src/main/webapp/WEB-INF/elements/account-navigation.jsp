@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false"%>
-<div class="account">
+<div class="account" style="border-color: ${asideColor} !important;">
     <p>zalogowany</p>
     <p>Nick: ${firstName}</p>
 

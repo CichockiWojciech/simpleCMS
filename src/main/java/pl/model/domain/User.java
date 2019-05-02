@@ -70,7 +70,7 @@ public class User implements Serializable {
     @Pattern(regexp = "^#([0-9a-fA-F]{6})|#([0-9a-fA-F]{3})$",message = "nie prawidłowy format koloru panelu bocznego")
     private String asideColor;
 
-    @Column(table = "COLOR", nullable = true)
+    @Column(table = "COLOR")
     @NotNull
     @Pattern(regexp = "^#([0-9a-fA-F]{6})|#([0-9a-fA-F]{3})$",message = "nie prawidłowy format koloru stopki")
     private String footerColor;
@@ -86,11 +86,11 @@ public class User implements Serializable {
         this.password = password;
 
         this.contents = new ArrayList<>();
-        this.headerColor = "#cccccc";
-        this.contentColor = "#cccccc";
-        this.linkColor = "#cccccc";
-        this.asideColor = "#cccccc";
-        this.footerColor = "#cccccc";
+        this.headerColor = "#ccc";
+        this.contentColor = "#ccc";
+        this.linkColor = "#ccc";
+        this.asideColor = "#ccc";
+        this.footerColor = "#ccc";
     }
 
     public void addContent(Content content){
