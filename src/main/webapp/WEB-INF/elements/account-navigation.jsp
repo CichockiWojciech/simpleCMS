@@ -3,10 +3,12 @@
     <p>zalogowany</p>
     <p>Nick: ${firstName}</p>
 
-    <form class="aside-option" action="account" method="get">
-        <input type="submit" name="action" value="PROFIL" />
-    </form>
-    <form class="aside-option" action="account" method="get">
-        <input type="submit" name="action" value="WYLOGUJ" />
-    </form>
+    <div class="account-navigation" style="border-color: ${asideColor} !important;">
+        <form class="aside-option" action="account" method="get">
+            <input type="submit" name="action" value="PROFIL" />
+        </form>
+        <form class="aside-option" action="account" method="get">
+            <input type="submit" name="action" value="WYLOGUJ" />
+        </form>
+    </div>
 </div>

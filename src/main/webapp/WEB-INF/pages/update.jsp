@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -19,7 +19,7 @@
 
     <!--CONTENT-->
     <div class="content" style="border-color: ${contentColor} !important;">
-        <jsp:include page="/WEB-INF/elements/personal-data.jsp" />
+        <jsp:include page="/WEB-INF/elements/content-update-editor.jsp" />
     </div>
 
     <!--ASIDE-->

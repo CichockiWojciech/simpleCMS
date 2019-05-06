@@ -17,6 +17,7 @@ import javax.servlet.http.Part;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Optional;
 
 @WebServlet(name = "AccountServlet", urlPatterns = {"/account"})
 @MultipartConfig
@@ -69,6 +70,23 @@ public class AccountServlet extends HttpServlet {
                     request.setAttribute("info", canCreate.getValue());
                     context.getRequestDispatcher(path + "/create.jsp").forward(request, response);
                 }
+                break;
+            }
+            case "edytuj tresc":{
+                final Optional<Content> content = Optional.ofNullable((Content) request.getSession().getAttribute("content"));
+                if(content.isPresent()){
+                    String text = request.getParameter("text");
+                    content.get().setText(text);
+                    userDAO.update(user);
+                    View.setPersonalData(request, user);
+                    request.setAttribute("title", content.get().getTitle());
+                    request.setAttribute("text", text);
+                    context.getRequestDispatcher(path + "/content.jsp").forward(request, response);
+                }else{
+                    request.setAttribute("info", "nie wybrano zadnego linku");
+                    context.getRequestDispatcher(path + "/account.jsp").forward(request, response);
+                }
+
                 break;
             }
             case "dodaj": {
@@ -139,6 +157,7 @@ public class AccountServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         ServletContext context = getServletContext();
         String path = context.getInitParameter("resourcePath");
+        UserDAO userDAO = (UserDAO) context.getAttribute("userDAO");
 
         String action = request.getParameter("action");
         User user = Session.getLogInUser(request, response, context, true);
@@ -157,6 +176,30 @@ public class AccountServlet extends HttpServlet {
             // handle nav
             case "dodaj strone":{
                 context.getRequestDispatcher(path + "/create.jsp").forward(request, response);
+                break;
+            }
+            case "edytuj strone":{
+                final Optional<Content> content = Optional.ofNullable((Content) request.getSession().getAttribute("content"));
+                if(content.isPresent()){
+                    request.setAttribute("title", content.get().getTitle());
+                    request.setAttribute("text", content.get().getText());
+                    context.getRequestDispatcher(path + "/update.jsp").forward(request, response);
+                }else{
+                    request.setAttribute("info", "nie wybrałeś żadnego linku");
+                    context.getRequestDispatcher(path + "/account.jsp").forward(request, response);
+                }
+                break;
+            }
+            case "usun strone":{
+                final Optional<Content> content = Optional.ofNullable((Content) request.getSession().getAttribute("content"));
+                if(content.isPresent()){
+                    user.getContents().remove(content.get());
+                    userDAO.update(user);
+                    context.getRequestDispatcher(path + "/account.jsp").forward(request, response);
+                }else{
+                    request.setAttribute("info", "nie wybrałeś żadnego linku");
+                    context.getRequestDispatcher(path + "/account.jsp").forward(request, response);
+                }
                 break;
             }
             case "ustaw kolor":{

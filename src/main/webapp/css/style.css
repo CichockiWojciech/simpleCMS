@@ -102,6 +102,7 @@ body {
 }
 
 .account{
+    padding: 5px;
     text-align: center;
     border: 2px solid #ccc;
 }
@@ -166,6 +167,11 @@ p.personal-value{
     margin: 10px auto;
 }
 
+#title{
+    padding: 5px;
+    text-align: center;
+}
+
 .editor input[type=text]{
     display: block;
     margin: 10px auto;
@@ -183,6 +189,11 @@ p.personal-value{
     height: 8%;
     font-size: 1em;
     font-weight: 600;
+}
+
+.editor h3{
+    text-align: center;
+    padding: 8px;
 }
 
 .link{
@@ -222,7 +233,21 @@ textarea {
     margin: 10px auto;
 }
 
+.content-nav{
+    border: 2px solid #ccc;
+}
+
 .content-nav > input{
     margin: 5px auto;
     display: block;
+}
+
+.account-navigation{
+    border: 2px solid #ccc;
+}
+
+.remove-page > input{
+    display: block;
+    margin: 20px auto;
+    padding: 6px;
 }

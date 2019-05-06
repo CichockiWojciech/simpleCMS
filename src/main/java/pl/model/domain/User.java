@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Data
@@ -97,8 +98,11 @@ public class User implements Serializable {
         contents.add(content);
     }
 
-    public String getContentByTitle(String tile){
-        return contents.stream().filter((content) -> content.getTitle().equals(tile))
-                .map(Content::getText).findFirst().orElse("");
+    public Optional<Content> getContentByTitle(String title){
+        return contents.stream().filter((content) -> content.getTitle().equals(title)).findFirst();
+    }
+
+    public void removeContent(Content content){
+        contents.remove(content);
     }
 }

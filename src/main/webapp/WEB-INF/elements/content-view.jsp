@@ -5,3 +5,6 @@
 <div id="text">
     <p>${text}</p>
 </div>
+<form class="remove-page" action="account" method="GET">
+    <input type="submit" name="action" value="USUN STRONE" />
+</form>

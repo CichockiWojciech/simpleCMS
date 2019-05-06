@@ -3,6 +3,7 @@
 <div id="menu">
     <form action="account" method="get" class="content-nav">
         <input type="submit" name="action" value="DODAJ STRONE" />
+        <input type="submit" name="action" value="EDYTUJ STRONE" />
         <input type="submit" name="action" value="USTAW KOLOR" />
     </form>
 
